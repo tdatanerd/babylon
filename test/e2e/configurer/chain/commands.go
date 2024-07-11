@@ -21,6 +21,10 @@ import (
 	btccheckpointtypes "github.com/babylonchain/babylon/x/btccheckpoint/types"
 	blc "github.com/babylonchain/babylon/x/btclightclient/types"
 	cttypes "github.com/babylonchain/babylon/x/checkpointing/types"
+	cmtbytes "github.com/cometbft/cometbft/libs/bytes"
+	"github.com/cometbft/cometbft/p2p"
+	coretypes "github.com/cometbft/cometbft/rpc/core/types"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	sdkquerytypes "github.com/cosmos/cosmos-sdk/types/query"
@@ -30,6 +34,38 @@ import (
 const (
 	flagKeyringTest = "--keyring-backend=test"
 )
+
+type validatorInfo struct {
+	Address     cmtbytes.HexBytes
+	PubKey      cryptotypes.PubKey
+	VotingPower int64
+}
+
+// ResultStatus is node's info, same as Tendermint, except that we use our own
+// PubKey.
+type resultStatus struct {
+	NodeInfo      p2p.DefaultNodeInfo
+	SyncInfo      coretypes.SyncInfo
+	ValidatorInfo validatorInfo
+}
+
+func (n *NodeConfig) Status() (resultStatus, error) {
+	cmd := []string{"babylond", "status"}
+	outBuf, _, err := n.containerManager.ExecCmd(n.t, n.Name, cmd, "")
+	if err != nil {
+		return resultStatus{}, err
+	}
+
+	legacyAmino := util.EncodingConfig.Amino
+	var result resultStatus
+	err = legacyAmino.UnmarshalJSON(outBuf.Bytes(), &result)
+	fmt.Println("result", result)
+
+	if err != nil {
+		return resultStatus{}, err
+	}
+	return result, nil
+}
 
 func (n *NodeConfig) GetWallet(walletName string) string {
 	n.LogActionF("retrieving wallet %s", walletName)

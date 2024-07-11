@@ -7,8 +7,10 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/babylonchain/babylon/test/e2e/initialization"
 	"github.com/babylonchain/babylon/test/e2e/util"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -178,6 +180,20 @@ func (n *NodeConfig) VoteYesProposal(from string, proposalNumber int) {
 	_, _, err := n.containerManager.ExecTxCmd(n.t, n.chainId, n.Name, cmd)
 	require.NoError(n.t, err)
 	n.LogActionF("successfully voted yes on proposal %d", proposalNumber)
+}
+
+func AllValsVoteOnProposal(chain *Config, propNumber int) {
+	var wg sync.WaitGroup
+
+	for _, n := range chain.NodeConfigs {
+		wg.Add(1)
+		go func(nodeConfig *NodeConfig) {
+			defer wg.Done()
+			nodeConfig.VoteYesProposal(initialization.ValidatorWalletName, propNumber)
+		}(n)
+	}
+
+	wg.Wait()
 }
 
 func (n *NodeConfig) VoteNoProposal(from string, proposalNumber int) {
