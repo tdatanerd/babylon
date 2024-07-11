@@ -59,22 +59,15 @@ func (s *UpgradeTestSuite) TestUpgradePayments() {
 				// inject upgrade plan
 				s.ctx = s.ctx.WithBlockHeight(DummyUpgradeHeight - 1)
 				plan := upgradetypes.Plan{Name: v1.Upgrade.UpgradeName, Height: DummyUpgradeHeight}
-				s.app.UpgradeKeeper.SetUpgradeHandler(
-					v1.Upgrade.UpgradeName,
-					v1.Upgrade.CreateUpgradeHandler(
-						s.app.ModuleManager,
-						nil,
-						nil,
-						s.app.AppKeepers,
-					),
-				)
-
-				// run upgrade
 				err := s.app.UpgradeKeeper.ScheduleUpgrade(s.ctx, plan)
 				s.NoError(err)
-				_, err = s.app.UpgradeKeeper.GetUpgradePlan(s.ctx)
-				s.NoError(err)
 
+				// ensure upgrade plan exists
+				actualPlan, err := s.app.UpgradeKeeper.GetUpgradePlan(s.ctx)
+				s.NoError(err)
+				s.Equal(plan, actualPlan)
+
+				// execute upgrade
 				s.ctx = s.ctx.WithHeaderInfo(header.Info{Height: DummyUpgradeHeight, Time: s.ctx.BlockTime().Add(time.Second)}).WithBlockHeight(DummyUpgradeHeight)
 				s.NotPanics(func() {
 					_, err := s.preModule.PreBlock(s.ctx)

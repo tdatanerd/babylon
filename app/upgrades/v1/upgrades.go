@@ -24,16 +24,17 @@ var Upgrade = upgrades.Upgrade{
 
 func CreateUpgradeHandler(
 	mm *module.Manager,
-	_ module.Configurator,
+	cfg module.Configurator,
 	_ upgrades.BaseAppParamManager,
 	keepers *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
-	return func(context context.Context, _plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+	return func(context context.Context, _plan upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
+
 		ctx := sdk.UnwrapSDKContext(context)
 
 		propVanilla(ctx, &keepers.AccountKeeper, &keepers.BTCStakingKeeper)
 
-		return vm, nil
+		return mm.RunMigrations(ctx, cfg, fromVM)
 	}
 }
 
