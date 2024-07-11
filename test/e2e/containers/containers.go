@@ -252,7 +252,8 @@ func (m *Manager) RunNodeResource(chainId string, containerName, valCondifDir st
 
 	runOpts := &dockertest.RunOptions{
 		Name:       containerName,
-		Repository: BabylonContainerName,
+		Repository: m.BabylonRepository,
+		Tag:        m.BabylonTag,
 		NetworkID:  m.network.Network.ID,
 		User:       "root:root",
 		Entrypoint: []string{
