@@ -1,73 +1,25 @@
-package upgrades_test
+package v1_test
 
 import (
-	"context"
 	"fmt"
-	"math/rand"
 	"testing"
 	"time"
 
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/header"
-	store "cosmossdk.io/store/types"
 	"cosmossdk.io/x/upgrade"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/babylonchain/babylon/app"
-	"github.com/babylonchain/babylon/app/keepers"
-	"github.com/babylonchain/babylon/app/upgrades"
-	"github.com/babylonchain/babylon/testutil/datagen"
-	btcstakingkeeper "github.com/babylonchain/babylon/x/btcstaking/keeper"
+	v1 "github.com/babylonchain/babylon/app/upgrades/v1"
 	bstypes "github.com/babylonchain/babylon/x/btcstaking/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/stretchr/testify/suite"
 )
 
 const (
 	DummyUpgradeHeight = 5
 )
-
-var Upgrade = upgrades.Upgrade{
-	UpgradeName:          "vanilla",
-	CreateUpgradeHandler: CreateUpgradeHandler,
-	StoreUpgrades:        store.StoreUpgrades{},
-}
-
-func CreateUpgradeHandler(
-	mm *module.Manager,
-	_ module.Configurator,
-	_ upgrades.BaseAppParamManager,
-	keepers *keepers.AppKeepers,
-) upgradetypes.UpgradeHandler {
-	return func(context context.Context, _plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-		ctx := sdk.UnwrapSDKContext(context)
-
-		propVanilla(ctx, &keepers.AccountKeeper, &keepers.BTCStakingKeeper)
-
-		return vm, nil
-	}
-}
-
-func propVanilla(
-	ctx sdk.Context,
-	accountKeeper *authkeeper.AccountKeeper,
-	bsKeeper *btcstakingkeeper.Keeper,
-) {
-	r := rand.New(rand.NewSource(time.Now().Unix()))
-
-	// remove an account
-	allAccounts := accountKeeper.GetAllAccounts(ctx)
-	accountKeeper.RemoveAccount(ctx, allAccounts[len(allAccounts)-1])
-
-	// insert a FP
-	fp, err := datagen.GenRandomFinalityProvider(r)
-	if err != nil {
-		panic(err)
-	}
-	bsKeeper.SetFinalityProvider(ctx, fp)
-}
 
 type UpgradeTestSuite struct {
 	suite.Suite
@@ -106,10 +58,10 @@ func (s *UpgradeTestSuite) TestUpgradePayments() {
 			func() {
 				// inject upgrade plan
 				s.ctx = s.ctx.WithBlockHeight(DummyUpgradeHeight - 1)
-				plan := upgradetypes.Plan{Name: Upgrade.UpgradeName, Height: DummyUpgradeHeight}
+				plan := upgradetypes.Plan{Name: v1.Upgrade.UpgradeName, Height: DummyUpgradeHeight}
 				s.app.UpgradeKeeper.SetUpgradeHandler(
-					Upgrade.UpgradeName,
-					Upgrade.CreateUpgradeHandler(
+					v1.Upgrade.UpgradeName,
+					v1.Upgrade.CreateUpgradeHandler(
 						s.app.ModuleManager,
 						nil,
 						nil,
