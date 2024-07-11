@@ -39,9 +39,9 @@ type Manager struct {
 
 // NewManager creates a new Manager instance and initializes
 // all Docker specific utilities. Returns an error if initialization fails.
-func NewManager(isDebugLogEnabled bool, isCosmosRelayer bool) (docker *Manager, err error) {
+func NewManager(isDebugLogEnabled bool, isCosmosRelayer bool, isUpgrade bool, isFork bool) (docker *Manager, err error) {
 	docker = &Manager{
-		ImageConfig:       NewImageConfig(isCosmosRelayer),
+		ImageConfig:       NewImageConfig(isCosmosRelayer, isUpgrade, isFork),
 		resources:         make(map[string]*dockertest.Resource),
 		isDebugLogEnabled: isDebugLogEnabled,
 	}
