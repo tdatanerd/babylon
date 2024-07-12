@@ -1,4 +1,4 @@
-package v1_test
+package vanilla_test
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"cosmossdk.io/x/upgrade"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/babylonchain/babylon/app"
-	v1 "github.com/babylonchain/babylon/app/upgrades/v1"
+	v1 "github.com/babylonchain/babylon/app/upgrades/vanilla"
 	bstypes "github.com/babylonchain/babylon/x/btcstaking/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -30,6 +30,10 @@ type UpgradeTestSuite struct {
 }
 
 func (s *UpgradeTestSuite) SetupTest() {
+	// add the upgrade plan
+	app.Upgrades = append(app.Upgrades, v1.Upgrade)
+
+	// set up app
 	s.app = app.Setup(s.T(), false)
 	s.ctx = s.app.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: "babylon-1", Time: time.Now().UTC()})
 	s.preModule = upgrade.NewAppModule(s.app.UpgradeKeeper, s.app.AccountKeeper.AddressCodec())
