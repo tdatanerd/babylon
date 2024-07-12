@@ -1,4 +1,4 @@
-package v1_test
+package vanilla_test
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"cosmossdk.io/x/upgrade"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/babylonchain/babylon/app"
-	v1 "github.com/babylonchain/babylon/app/upgrades/v1"
+	v1 "github.com/babylonchain/babylon/app/upgrades/vanilla"
 	bstypes "github.com/babylonchain/babylon/x/btcstaking/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
