@@ -12,7 +12,6 @@ jobs:
      run-unit-tests: true
      run-integration-tests: true
      run-lint: true
-     go-version: 1.21.4
      
      
   docker_pipeline:
