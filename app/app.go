@@ -25,7 +25,6 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/babylonchain/babylon/app/upgrades"
-	v1 "github.com/babylonchain/babylon/app/upgrades/v1"
 	bbn "github.com/babylonchain/babylon/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmtos "github.com/cometbft/cometbft/libs/os"
@@ -155,7 +154,7 @@ var (
 	}
 
 	// software upgrades and forks
-	Upgrades = []upgrades.Upgrade{v1.Upgrade}
+	Upgrades = []upgrades.Upgrade{}
 	Forks    = []upgrades.Fork{}
 )
 
@@ -265,7 +264,6 @@ func NewBabylonApp(
 		wasmOpts,
 		BlockedAddresses(),
 	)
-	app.setupUpgradeStoreLoaders()
 
 	/****  Module Options ****/
 
@@ -457,9 +455,6 @@ func NewBabylonApp(
 	// add test gRPC service for testing gRPC queries in isolation
 	testdata.RegisterQueryServer(app.GRPCQueryRouter(), testdata.QueryImpl{})
 
-	// set upgrade handler
-	app.setupUpgradeHandlers()
-
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	//
 	// NOTE: this is not required apps that don't use the simulator for fuzz testing
@@ -511,6 +506,7 @@ func NewBabylonApp(
 	)
 
 	app.SetInitChainer(app.InitChainer)
+	app.SetPreBlocker(app.PreBlocker)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 	app.SetAnteHandler(anteHandler)
@@ -545,6 +541,10 @@ func NewBabylonApp(
 		// want to panic here instead of logging a warning.
 		_, _ = fmt.Fprintln(os.Stderr, err.Error())
 	}
+
+	// set upgrade handler and store loader for supporting software upgrade
+	app.setupUpgradeHandlers()
+	app.setupUpgradeStoreLoaders()
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
