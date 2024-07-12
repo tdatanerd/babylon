@@ -511,6 +511,18 @@ func NewBabylonApp(
 	app.SetEndBlocker(app.EndBlocker)
 	app.SetAnteHandler(anteHandler)
 
+	// set proposal extension
+
+	proposalHandler := checkpointing.NewProposalHandler(
+		logger, &app.CheckpointingKeeper, bApp.Mempool(), bApp)
+	// NOTE: this line adds the checkpoint extraction logic on top of
+	// the existing PreBlocker
+	proposalHandler.SetHandlers(bApp)
+
+	// set vote extension
+	voteExtHandler := checkpointing.NewVoteExtensionHandler(logger, &app.CheckpointingKeeper)
+	voteExtHandler.SetHandlers(bApp)
+
 	// set postHandler
 	postHandler := sdk.ChainPostDecorators(
 		zckeeper.NewIBCHeaderDecorator(app.ZoneConciergeKeeper),

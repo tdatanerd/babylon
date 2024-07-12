@@ -30,6 +30,10 @@ type UpgradeTestSuite struct {
 }
 
 func (s *UpgradeTestSuite) SetupTest() {
+	// add the upgrade plan
+	app.Upgrades = append(app.Upgrades, v1.Upgrade)
+
+	// set up app
 	s.app = app.Setup(s.T(), false)
 	s.ctx = s.app.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: "babylon-1", Time: time.Now().UTC()})
 	s.preModule = upgrade.NewAppModule(s.app.UpgradeKeeper, s.app.AccountKeeper.AddressCodec())
