@@ -522,7 +522,7 @@ func NewBabylonApp(
 			return res, err
 		}
 		// execute checkpointing module's PreBlocker
-		// NOTE: this does not change the consensus prameter in `res`
+		// NOTE: this does not change the consensus parameter in `res`
 		ckptPreBlocker := proposalHandler.PreBlocker()
 		if _, err := ckptPreBlocker(ctx, req); err != nil {
 			return res, err
