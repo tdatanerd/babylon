@@ -25,6 +25,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/babylonchain/babylon/app/upgrades"
+	"github.com/babylonchain/babylon/app/upgrades/vanilla"
 	bbn "github.com/babylonchain/babylon/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmtos "github.com/cometbft/cometbft/libs/os"
@@ -157,8 +158,10 @@ var (
 	}
 
 	// software upgrades and forks
-	Upgrades = []upgrades.Upgrade{}
-	Forks    = []upgrades.Fork{}
+	Upgrades = []upgrades.Upgrade{
+		vanilla.Upgrade,
+	}
+	Forks = []upgrades.Fork{}
 )
 
 func init() {
