@@ -267,7 +267,6 @@ func NewBabylonApp(
 		wasmOpts,
 		BlockedAddresses(),
 	)
-	app.setupUpgradeStoreLoaders()
 
 	/****  Module Options ****/
 
@@ -463,9 +462,6 @@ func NewBabylonApp(
 	// add test gRPC service for testing gRPC queries in isolation
 	testdata.RegisterQueryServer(app.GRPCQueryRouter(), testdata.QueryImpl{})
 
-	// set upgrade handler
-	app.setupUpgradeHandlers()
-
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	//
 	// NOTE: this is not required apps that don't use the simulator for fuzz testing
@@ -516,7 +512,30 @@ func NewBabylonApp(
 		NewBtcValidationDecorator(btcConfig, &app.BtcCheckpointKeeper),
 	)
 
+	// set proposal extension
+	proposalHandler := checkpointing.NewProposalHandler(
+		logger, &app.CheckpointingKeeper, bApp.Mempool(), bApp)
+	proposalHandler.SetHandlers(bApp)
+
+	// set vote extension
+	voteExtHandler := checkpointing.NewVoteExtensionHandler(logger, &app.CheckpointingKeeper)
+	voteExtHandler.SetHandlers(bApp)
+
 	app.SetInitChainer(app.InitChainer)
+	app.SetPreBlocker(func(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+		// execute the existing PreBlocker
+		res, err := app.PreBlocker(ctx, req)
+		if err != nil {
+			return res, err
+		}
+		// execute checkpointing module's PreBlocker
+		// NOTE: this does not change the consensus parameter in `res`
+		ckptPreBlocker := proposalHandler.PreBlocker()
+		if _, err := ckptPreBlocker(ctx, req); err != nil {
+			return res, err
+		}
+		return res, nil
+	})
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 	app.SetAnteHandler(anteHandler)
@@ -558,6 +577,10 @@ func NewBabylonApp(
 		// want to panic here instead of logging a warning.
 		_, _ = fmt.Fprintln(os.Stderr, err.Error())
 	}
+
+	// set upgrade handler and store loader for supporting software upgrade
+	app.setupUpgradeHandlers()
+	app.setupUpgradeStoreLoaders()
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {

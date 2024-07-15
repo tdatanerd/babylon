@@ -70,7 +70,6 @@ import (
 	btclightclienttypes "github.com/babylonchain/babylon/x/btclightclient/types"
 	btcstakingkeeper "github.com/babylonchain/babylon/x/btcstaking/keeper"
 	btcstakingtypes "github.com/babylonchain/babylon/x/btcstaking/types"
-	"github.com/babylonchain/babylon/x/checkpointing"
 	checkpointingkeeper "github.com/babylonchain/babylon/x/checkpointing/keeper"
 	checkpointingtypes "github.com/babylonchain/babylon/x/checkpointing/types"
 	epochingkeeper "github.com/babylonchain/babylon/x/epoching/keeper"
@@ -258,15 +257,6 @@ func (ak *AppKeepers) InitKeepers(
 		privSigner.WrappedPV,
 		epochingKeeper,
 	)
-
-	// set proposal extension
-	proposalHandler := checkpointing.NewProposalHandler(
-		logger, &checkpointingKeeper, bApp.Mempool(), bApp)
-	proposalHandler.SetHandlers(bApp)
-
-	// set vote extension
-	voteExtHandler := checkpointing.NewVoteExtensionHandler(logger, &checkpointingKeeper)
-	voteExtHandler.SetHandlers(bApp)
 
 	// register streaming services
 	if err := bApp.RegisterStreamingServices(appOpts, keys); err != nil {
