@@ -61,5 +61,5 @@ message FinalityProviderSigningInfo {
     int64 start_height = 2;
     // missed_blocks_counter defines a counter to avoid unnecessary array reads.
     // Note that `Sum(MissedBlocksBitArray)` always equals `MissedBlocksCounter`.
-    int64 missed_blocks_counter = 4;
+    int64 missed_blocks_counter = 3;
 }

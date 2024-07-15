@@ -12,7 +12,7 @@ import (
 const (
 	DefaultSignedBlocksWindow = int64(100)
 	DefaultMinPubRand         = 100
-	DefaultFinalityVoteDelay  = 3
+	DefaultFinalitySigTimeout = 3
 )
 
 var (
@@ -24,7 +24,7 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		FinalityVoteDelay:  DefaultFinalityVoteDelay,
+		FinalitySigTimeout: DefaultFinalitySigTimeout,
 		SignedBlocksWindow: DefaultSignedBlocksWindow,
 		MinSignedPerWindow: DefaultMinSignedPerWindow,
 		MinPubRand:         DefaultMinPubRand,
@@ -55,7 +55,7 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateFinalityVoteDelay(p.FinalityVoteDelay); err != nil {
+	if err := validateFinalitySigTimeout(p.FinalitySigTimeout); err != nil {
 		return err
 	}
 
@@ -83,7 +83,7 @@ func validateSignedBlocksWindow(i interface{}) error {
 	return nil
 }
 
-func validateFinalityVoteDelay(i interface{}) error {
+func validateFinalitySigTimeout(i interface{}) error {
 	v, ok := i.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
