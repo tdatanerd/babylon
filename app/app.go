@@ -506,23 +506,33 @@ func NewBabylonApp(
 		NewBtcValidationDecorator(btcConfig, &app.BtcCheckpointKeeper),
 	)
 
-	app.SetInitChainer(app.InitChainer)
-	app.SetPreBlocker(app.PreBlocker)
-	app.SetBeginBlocker(app.BeginBlocker)
-	app.SetEndBlocker(app.EndBlocker)
-	app.SetAnteHandler(anteHandler)
-
 	// set proposal extension
-
 	proposalHandler := checkpointing.NewProposalHandler(
 		logger, &app.CheckpointingKeeper, bApp.Mempool(), bApp)
-	// NOTE: this line adds the checkpoint extraction logic on top of
-	// the existing PreBlocker
 	proposalHandler.SetHandlers(bApp)
 
 	// set vote extension
 	voteExtHandler := checkpointing.NewVoteExtensionHandler(logger, &app.CheckpointingKeeper)
 	voteExtHandler.SetHandlers(bApp)
+
+	app.SetInitChainer(app.InitChainer)
+	app.SetPreBlocker(func(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+		// execute the existing PreBlocker
+		res, err := app.PreBlocker(ctx, req)
+		if err != nil {
+			return res, err
+		}
+		// execute checkpointing module's PreBlocker
+		// NOTE: this does not change the consensus parameter in `res`
+		ckptPreBlocker := proposalHandler.PreBlocker()
+		if _, err := ckptPreBlocker(ctx, req); err != nil {
+			return res, err
+		}
+		return res, nil
+	})
+	app.SetBeginBlocker(app.BeginBlocker)
+	app.SetEndBlocker(app.EndBlocker)
+	app.SetAnteHandler(anteHandler)
 
 	// set postHandler
 	postHandler := sdk.ChainPostDecorators(
