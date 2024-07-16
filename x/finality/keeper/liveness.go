@@ -78,12 +78,6 @@ func (k Keeper) HandleFinalityProviderLiveness(ctx context.Context, fpPk *types.
 	if height > minHeight && signInfo.MissedBlocksCounter > maxMissed {
 		updated = true
 
-		// Inactivity detected
-		err = k.hooks.AfterInactiveFinalityProviderDetected(ctx, fpPk)
-		if err != nil {
-			return err
-		}
-
 		k.Logger(sdkCtx).Info(
 			"detected inactive finality provider",
 			"height", height,
@@ -93,27 +87,41 @@ func (k Keeper) HandleFinalityProviderLiveness(ctx context.Context, fpPk *types.
 			"window_size", signedBlocksWindow,
 		)
 
+		// Inactivity detected
+		err = k.hooks.AfterInactiveFinalityProviderDetected(ctx, fpPk)
+		if err != nil {
+			return err
+		}
+
 		if err := sdkCtx.EventManager().EmitTypedEvent(
 			finalitytypes.NewEventInactiveFinalityProviderDetected(fpPk),
 		); err != nil {
 			panic(fmt.Errorf("failed to emit inactive finality provider detected event for height %d: %w", height, err))
 		}
 
+		finalitytypes.IncrementInactiveFinalityProviderCounter()
 	} else if fp.IsInactive() {
 		updated = true
-		// TODO emit event
-
-		// change the Inactive flag of the finality provider to false
-		err = k.BTCStakingKeeper.RevertInactiveFinalityProvider(ctx, fpPk.MustMarshal())
-		if err != nil {
-			return fmt.Errorf("failed to revert inactive finality provider %s: %w", fpPk.MarshalHex(), err)
-		}
 
 		k.Logger(sdkCtx).Info(
 			"reverted inactive finality provider",
 			"height", height,
 			"public_key", fpPk.MarshalHex(),
 		)
+	
+		// change the Inactive flag of the finality provider to false
+		err = k.BTCStakingKeeper.RevertInactiveFinalityProvider(ctx, fpPk.MustMarshal())
+		if err != nil {
+			return fmt.Errorf("failed to revert inactive finality provider %s: %w", fpPk.MarshalHex(), err)
+		}
+
+		if err := sdkCtx.EventManager().EmitTypedEvent(
+			finalitytypes.NewEventInactiveFinalityProviderReverted(fpPk),
+		); err != nil {
+			panic(fmt.Errorf("failed to emit inactive finality provider reverted event for height %d: %w", height, err))
+		}
+
+		finalitytypes.DecrementInactiveFinalityProviderCounter()
 	}
 
 	// Set the updated signing info

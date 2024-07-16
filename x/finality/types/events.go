@@ -11,3 +11,7 @@ func NewEventSlashedFinalityProvider(evidence *Evidence) *EventSlashedFinalityPr
 func NewEventInactiveFinalityProviderDetected(fpPk *types.BIP340PubKey) *EventInactiveFinalityProviderDetected {
 	return &EventInactiveFinalityProviderDetected{PublicKey: fpPk.MarshalHex()}
 }
+
+func NewEventInactiveFinalityProviderReverted(fpPk *types.BIP340PubKey) *EventInactiveFinalityProviderReverted {
+	return &EventInactiveFinalityProviderReverted{PublicKey: fpPk.MarshalHex()}
+}

@@ -243,7 +243,7 @@ message QuerySigningInfosRequest {
 // QuerySigningInfosResponse is the response type for the Query/SigningInfos RPC
 // method
 message QuerySigningInfosResponse {
-  // info is the signing info of all active finality providers
+  // info is the signing info of all finality providers with signing info
   repeated FinalityProviderSigningInfo fp_signing_infos = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
