@@ -98,6 +98,7 @@ func (k Keeper) HandleFinalityProviderLiveness(ctx context.Context, fpPk *types.
 		); err != nil {
 			panic(fmt.Errorf("failed to emit inactive finality provider detected event for height %d: %w", height, err))
 		}
+
 	} else if fp.IsInactive() {
 		updated = true
 		// TODO emit event
