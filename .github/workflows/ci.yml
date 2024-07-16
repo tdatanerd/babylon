@@ -20,3 +20,4 @@ jobs:
     with:
      publish: false
      dockerfile: ./contrib/images/babylond/Dockerfile
+     repoName: babylond

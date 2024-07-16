@@ -18,7 +18,9 @@ jobs:
       
   docker_pipeline:
     uses: babylonchain/.github/.github/workflows/reusable_docker_pipeline.yml@hiep/add-reusable-workflows
+    needs: ["lint_test"]
     secrets: inherit
     with:
       publish: true
       dockerfile: ./contrib/images/babylond/Dockerfile
+      repoName: babylond
