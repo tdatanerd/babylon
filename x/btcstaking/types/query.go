@@ -66,6 +66,7 @@ func NewFinalityProviderResponse(f *FinalityProvider, bbnBlockHeight, votingPowe
 		Pop:                  f.Pop,
 		SlashedBabylonHeight: f.SlashedBabylonHeight,
 		SlashedBtcHeight:     f.SlashedBtcHeight,
+		Inactive:             f.Inactive,
 		Height:               bbnBlockHeight,
 		VotingPower:          votingPower,
 	}

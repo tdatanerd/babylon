@@ -62,8 +62,6 @@ func (k Keeper) HandleFinalityProviderLiveness(ctx context.Context, fpPk *types.
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	if missed {
-		// TODO emit event
-
 		k.Logger(sdkCtx).Debug(
 			"absent finality provider",
 			"height", height,
@@ -79,7 +77,6 @@ func (k Keeper) HandleFinalityProviderLiveness(ctx context.Context, fpPk *types.
 	// if we are past the minimum height and the finality provider has missed too many blocks, punish them
 	if height > minHeight && signInfo.MissedBlocksCounter > maxMissed {
 		updated = true
-		// TODO emit event
 
 		// Inactivity detected
 		err = k.hooks.AfterInactiveFinalityProviderDetected(ctx, fpPk)
@@ -91,7 +88,16 @@ func (k Keeper) HandleFinalityProviderLiveness(ctx context.Context, fpPk *types.
 			"detected inactive finality provider",
 			"height", height,
 			"public_key", fpPk.MarshalHex(),
+			"missed_count", signInfo.MissedBlocksCounter,
+			"threshold", minSignedPerWindow,
+			"window_size", signedBlocksWindow,
 		)
+
+		if err := sdkCtx.EventManager().EmitTypedEvent(
+			finalitytypes.NewEventInactiveFinalityProviderDetected(fpPk),
+		); err != nil {
+			panic(fmt.Errorf("failed to emit inactive finality provider detected event for height %d: %w", height, err))
+		}
 	} else if fp.IsInactive() {
 		updated = true
 		// TODO emit event
