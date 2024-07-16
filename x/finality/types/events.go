@@ -8,10 +8,10 @@ func NewEventSlashedFinalityProvider(evidence *Evidence) *EventSlashedFinalityPr
 	}
 }
 
-func NewEventInactiveFinalityProviderDetected(fpPk *types.BIP340PubKey) *EventInactiveFinalityProviderDetected {
-	return &EventInactiveFinalityProviderDetected{PublicKey: fpPk.MarshalHex()}
+func NewEventSluggishFinalityProviderDetected(fpPk *types.BIP340PubKey) *EventSluggishFinalityProviderDetected {
+	return &EventSluggishFinalityProviderDetected{PublicKey: fpPk.MarshalHex()}
 }
 
-func NewEventInactiveFinalityProviderReverted(fpPk *types.BIP340PubKey) *EventInactiveFinalityProviderReverted {
-	return &EventInactiveFinalityProviderReverted{PublicKey: fpPk.MarshalHex()}
+func NewEventSluggishFinalityProviderReverted(fpPk *types.BIP340PubKey) *EventSluggishFinalityProviderReverted {
+	return &EventSluggishFinalityProviderReverted{PublicKey: fpPk.MarshalHex()}
 }

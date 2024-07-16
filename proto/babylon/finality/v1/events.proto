@@ -12,16 +12,16 @@ message EventSlashedFinalityProvider {
     Evidence evidence = 1;
 }
 
-// EventInactiveFinalityProviderDetected is the event emitted when a finality provider is
-// detected as inactive
-message EventInactiveFinalityProviderDetected {
+// EventSluggishFinalityProviderDetected is the event emitted when a finality provider is
+// detected as sluggish
+message EventSluggishFinalityProviderDetected {
     // public_key is the BTC public key of the finality provider
     string public_key = 1;
 }
 
-// EventInactiveFinalityProviderReverted is the event emitted when an inactive finality
-// provider is no longer considered inactive
-message EventInactiveFinalityProviderReverted {
+// EventSluggishFinalityProviderReverted is the event emitted when a sluggish finality
+// provider is no longer considered sluggish
+message EventSluggishFinalityProviderReverted {
     // public_key is the BTC public key of the finality provider
     string public_key = 1;
 }

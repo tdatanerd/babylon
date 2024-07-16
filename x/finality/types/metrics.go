@@ -23,9 +23,9 @@ const (
 
 	/* Metrics for monitoring finality provider liveness */
 
-	// MetricsKeyInactiveFinalityProviderCounter is the number of finality providers
-	// that are being labeled as inactive
-	MetricsKeyInactiveFinalityProviderCounter = "inactive_finality_provider_counter"
+	// MetricsKeySluggishFinalityProviderCounter is the number of finality providers
+	// that are being labeled as sluggish
+	MetricsKeySluggishFinalityProviderCounter = "sluggish_finality_provider_counter"
 )
 
 // RecordLastHeight records the last height. It is triggered upon `IndexBlock`
@@ -51,10 +51,10 @@ func RecordLastFinalizedHeight(height uint64) {
 	)
 }
 
-// IncrementInactiveFinalityProviderCounter increments the counter for the inactive
+// IncrementSluggishFinalityProviderCounter increments the counter for the sluggish
 // finality providers
-func IncrementInactiveFinalityProviderCounter() {
-	keys := []string{MetricsKeyInactiveFinalityProviderCounter}
+func IncrementSluggishFinalityProviderCounter() {
+	keys := []string{MetricsKeySluggishFinalityProviderCounter}
 	labels := []metrics.Label{telemetry.NewLabel(telemetry.MetricLabelNameModule, ModuleName)}
 	telemetry.IncrCounterWithLabels(
 		keys,
@@ -63,10 +63,10 @@ func IncrementInactiveFinalityProviderCounter() {
 	)
 }
 
-// DecrementInactiveFinalityProviderCounter increments the counter for the inactive
+// DecrementSluggishFinalityProviderCounter increments the counter for the sluggish
 // finality providers
-func DecrementInactiveFinalityProviderCounter() {
-	keys := []string{MetricsKeyInactiveFinalityProviderCounter}
+func DecrementSluggishFinalityProviderCounter() {
+	keys := []string{MetricsKeySluggishFinalityProviderCounter}
 	labels := []metrics.Label{telemetry.NewLabel(telemetry.MetricLabelNameModule, ModuleName)}
 	telemetry.IncrCounterWithLabels(
 		keys,

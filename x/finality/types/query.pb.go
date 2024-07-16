@@ -1065,7 +1065,7 @@ func (m *QuerySigningInfosRequest) GetPagination() *query.PageRequest {
 // QuerySigningInfosResponse is the response type for the Query/SigningInfos RPC
 // method
 type QuerySigningInfosResponse struct {
-	// info is the signing info of all active finality providers
+	// info is the signing info of all finality providers with signing info
 	FpSigningInfos []FinalityProviderSigningInfo `protobuf:"bytes,1,rep,name=fp_signing_infos,json=fpSigningInfos,proto3" json:"fp_signing_infos"`
 	Pagination     *query.PageResponse           `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }

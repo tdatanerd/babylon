@@ -69,25 +69,25 @@ func (m *EventSlashedFinalityProvider) GetEvidence() *Evidence {
 	return nil
 }
 
-// EventInactiveFinalityProviderDetected is the event emitted when a finality provider is
-// detected as inactive
-type EventInactiveFinalityProviderDetected struct {
+// EventSluggishFinalityProviderDetected is the event emitted when a finality provider is
+// detected as sluggish
+type EventSluggishFinalityProviderDetected struct {
 	// public_key is the BTC public key of the finality provider
 	PublicKey string `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 }
 
-func (m *EventInactiveFinalityProviderDetected) Reset()         { *m = EventInactiveFinalityProviderDetected{} }
-func (m *EventInactiveFinalityProviderDetected) String() string { return proto.CompactTextString(m) }
-func (*EventInactiveFinalityProviderDetected) ProtoMessage()    {}
-func (*EventInactiveFinalityProviderDetected) Descriptor() ([]byte, []int) {
+func (m *EventSluggishFinalityProviderDetected) Reset()         { *m = EventSluggishFinalityProviderDetected{} }
+func (m *EventSluggishFinalityProviderDetected) String() string { return proto.CompactTextString(m) }
+func (*EventSluggishFinalityProviderDetected) ProtoMessage()    {}
+func (*EventSluggishFinalityProviderDetected) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c34c03aae5e3e6bf, []int{1}
 }
-func (m *EventInactiveFinalityProviderDetected) XXX_Unmarshal(b []byte) error {
+func (m *EventSluggishFinalityProviderDetected) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventInactiveFinalityProviderDetected) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventSluggishFinalityProviderDetected) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventInactiveFinalityProviderDetected.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventSluggishFinalityProviderDetected.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -97,44 +97,44 @@ func (m *EventInactiveFinalityProviderDetected) XXX_Marshal(b []byte, determinis
 		return b[:n], nil
 	}
 }
-func (m *EventInactiveFinalityProviderDetected) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventInactiveFinalityProviderDetected.Merge(m, src)
+func (m *EventSluggishFinalityProviderDetected) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventSluggishFinalityProviderDetected.Merge(m, src)
 }
-func (m *EventInactiveFinalityProviderDetected) XXX_Size() int {
+func (m *EventSluggishFinalityProviderDetected) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventInactiveFinalityProviderDetected) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventInactiveFinalityProviderDetected.DiscardUnknown(m)
+func (m *EventSluggishFinalityProviderDetected) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventSluggishFinalityProviderDetected.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventInactiveFinalityProviderDetected proto.InternalMessageInfo
+var xxx_messageInfo_EventSluggishFinalityProviderDetected proto.InternalMessageInfo
 
-func (m *EventInactiveFinalityProviderDetected) GetPublicKey() string {
+func (m *EventSluggishFinalityProviderDetected) GetPublicKey() string {
 	if m != nil {
 		return m.PublicKey
 	}
 	return ""
 }
 
-// EventInactiveFinalityProviderReverted is the event emitted when an inactive finality
-// provider is no longer considered inactive
-type EventInactiveFinalityProviderReverted struct {
+// EventSluggishFinalityProviderReverted is the event emitted when a sluggish finality
+// provider is no longer considered sluggish
+type EventSluggishFinalityProviderReverted struct {
 	// public_key is the BTC public key of the finality provider
 	PublicKey string `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 }
 
-func (m *EventInactiveFinalityProviderReverted) Reset()         { *m = EventInactiveFinalityProviderReverted{} }
-func (m *EventInactiveFinalityProviderReverted) String() string { return proto.CompactTextString(m) }
-func (*EventInactiveFinalityProviderReverted) ProtoMessage()    {}
-func (*EventInactiveFinalityProviderReverted) Descriptor() ([]byte, []int) {
+func (m *EventSluggishFinalityProviderReverted) Reset()         { *m = EventSluggishFinalityProviderReverted{} }
+func (m *EventSluggishFinalityProviderReverted) String() string { return proto.CompactTextString(m) }
+func (*EventSluggishFinalityProviderReverted) ProtoMessage()    {}
+func (*EventSluggishFinalityProviderReverted) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c34c03aae5e3e6bf, []int{2}
 }
-func (m *EventInactiveFinalityProviderReverted) XXX_Unmarshal(b []byte) error {
+func (m *EventSluggishFinalityProviderReverted) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventInactiveFinalityProviderReverted) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventSluggishFinalityProviderReverted) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventInactiveFinalityProviderReverted.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventSluggishFinalityProviderReverted.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -144,19 +144,19 @@ func (m *EventInactiveFinalityProviderReverted) XXX_Marshal(b []byte, determinis
 		return b[:n], nil
 	}
 }
-func (m *EventInactiveFinalityProviderReverted) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventInactiveFinalityProviderReverted.Merge(m, src)
+func (m *EventSluggishFinalityProviderReverted) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventSluggishFinalityProviderReverted.Merge(m, src)
 }
-func (m *EventInactiveFinalityProviderReverted) XXX_Size() int {
+func (m *EventSluggishFinalityProviderReverted) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventInactiveFinalityProviderReverted) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventInactiveFinalityProviderReverted.DiscardUnknown(m)
+func (m *EventSluggishFinalityProviderReverted) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventSluggishFinalityProviderReverted.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventInactiveFinalityProviderReverted proto.InternalMessageInfo
+var xxx_messageInfo_EventSluggishFinalityProviderReverted proto.InternalMessageInfo
 
-func (m *EventInactiveFinalityProviderReverted) GetPublicKey() string {
+func (m *EventSluggishFinalityProviderReverted) GetPublicKey() string {
 	if m != nil {
 		return m.PublicKey
 	}
@@ -165,14 +165,14 @@ func (m *EventInactiveFinalityProviderReverted) GetPublicKey() string {
 
 func init() {
 	proto.RegisterType((*EventSlashedFinalityProvider)(nil), "babylon.finality.v1.EventSlashedFinalityProvider")
-	proto.RegisterType((*EventInactiveFinalityProviderDetected)(nil), "babylon.finality.v1.EventInactiveFinalityProviderDetected")
-	proto.RegisterType((*EventInactiveFinalityProviderReverted)(nil), "babylon.finality.v1.EventInactiveFinalityProviderReverted")
+	proto.RegisterType((*EventSluggishFinalityProviderDetected)(nil), "babylon.finality.v1.EventSluggishFinalityProviderDetected")
+	proto.RegisterType((*EventSluggishFinalityProviderReverted)(nil), "babylon.finality.v1.EventSluggishFinalityProviderReverted")
 }
 
 func init() { proto.RegisterFile("babylon/finality/v1/events.proto", fileDescriptor_c34c03aae5e3e6bf) }
 
 var fileDescriptor_c34c03aae5e3e6bf = []byte{
-	// 252 bytes of a gzipped FileDescriptorProto
+	// 250 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x48, 0x4a, 0x4c, 0xaa,
 	0xcc, 0xc9, 0xcf, 0xd3, 0x4f, 0xcb, 0xcc, 0x4b, 0xcc, 0xc9, 0x2c, 0xa9, 0xd4, 0x2f, 0x33, 0xd4,
 	0x4f, 0x2d, 0x4b, 0xcd, 0x2b, 0x29, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x86, 0xaa,
@@ -180,15 +180,15 @@ var fileDescriptor_c34c03aae5e3e6bf = []byte{
 	0x92, 0x4b, 0xc6, 0x15, 0x64, 0x50, 0x70, 0x4e, 0x62, 0x71, 0x46, 0x6a, 0x8a, 0x1b, 0x54, 0x36,
 	0xa0, 0x28, 0xbf, 0x2c, 0x33, 0x25, 0xb5, 0x48, 0xc8, 0x92, 0x8b, 0x23, 0x15, 0xc4, 0xca, 0x4b,
 	0x4e, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x36, 0x92, 0xd5, 0xc3, 0x62, 0x97, 0x9e, 0x2b, 0x54,
-	0x51, 0x10, 0x5c, 0xb9, 0x92, 0x1b, 0x97, 0x2a, 0xd8, 0x68, 0xcf, 0xbc, 0xc4, 0xe4, 0x92, 0xcc,
-	0xb2, 0x54, 0x74, 0xb3, 0x5d, 0x52, 0x4b, 0x52, 0x93, 0x4b, 0x52, 0x53, 0x84, 0x64, 0xb9, 0xb8,
-	0x0a, 0x4a, 0x93, 0x72, 0x32, 0x93, 0xe3, 0xb3, 0x53, 0x2b, 0xc1, 0xb6, 0x70, 0x06, 0x71, 0x42,
-	0x44, 0xbc, 0x53, 0x2b, 0x09, 0x9a, 0x13, 0x94, 0x5a, 0x96, 0x5a, 0x44, 0xd8, 0x1c, 0x27, 0xaf,
-	0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39,
-	0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0x32, 0x48, 0xcf, 0x2c, 0xc9, 0x28,
-	0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0x87, 0x7a, 0x2e, 0x39, 0x23, 0x31, 0x33, 0x0f, 0xc6, 0xd1,
-	0xaf, 0x40, 0x04, 0x61, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0x38, 0xf4, 0x8c, 0x01, 0x01,
-	0x00, 0x00, 0xff, 0xff, 0x31, 0x4d, 0xd7, 0x8c, 0x9a, 0x01, 0x00, 0x00,
+	0x51, 0x10, 0x5c, 0xb9, 0x92, 0x1b, 0x97, 0x2a, 0xd4, 0xe8, 0xd2, 0xf4, 0xf4, 0xcc, 0xe2, 0x0c,
+	0x74, 0xb3, 0x5d, 0x52, 0x4b, 0x52, 0x93, 0x4b, 0x52, 0x53, 0x84, 0x64, 0xb9, 0xb8, 0x0a, 0x4a,
+	0x93, 0x72, 0x32, 0x93, 0xe3, 0xb3, 0x53, 0x2b, 0xc1, 0xb6, 0x70, 0x06, 0x71, 0x42, 0x44, 0xbc,
+	0x53, 0x2b, 0x09, 0x9a, 0x13, 0x94, 0x5a, 0x96, 0x5a, 0x44, 0xd8, 0x1c, 0x27, 0xaf, 0x13, 0x8f,
+	0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b,
+	0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0x32, 0x48, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2,
+	0x4b, 0xce, 0xcf, 0xd5, 0x87, 0x7a, 0x2e, 0x39, 0x23, 0x31, 0x33, 0x0f, 0xc6, 0xd1, 0xaf, 0x40,
+	0x04, 0x61, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0x38, 0xf4, 0x8c, 0x01, 0x01, 0x00, 0x00,
+	0xff, 0xff, 0x62, 0xf7, 0x2c, 0xf5, 0x9a, 0x01, 0x00, 0x00,
 }
 
 func (m *EventSlashedFinalityProvider) Marshal() (dAtA []byte, err error) {
@@ -226,7 +226,7 @@ func (m *EventSlashedFinalityProvider) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *EventInactiveFinalityProviderDetected) Marshal() (dAtA []byte, err error) {
+func (m *EventSluggishFinalityProviderDetected) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -236,12 +236,12 @@ func (m *EventInactiveFinalityProviderDetected) Marshal() (dAtA []byte, err erro
 	return dAtA[:n], nil
 }
 
-func (m *EventInactiveFinalityProviderDetected) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventSluggishFinalityProviderDetected) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventInactiveFinalityProviderDetected) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventSluggishFinalityProviderDetected) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -256,7 +256,7 @@ func (m *EventInactiveFinalityProviderDetected) MarshalToSizedBuffer(dAtA []byte
 	return len(dAtA) - i, nil
 }
 
-func (m *EventInactiveFinalityProviderReverted) Marshal() (dAtA []byte, err error) {
+func (m *EventSluggishFinalityProviderReverted) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -266,12 +266,12 @@ func (m *EventInactiveFinalityProviderReverted) Marshal() (dAtA []byte, err erro
 	return dAtA[:n], nil
 }
 
-func (m *EventInactiveFinalityProviderReverted) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventSluggishFinalityProviderReverted) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventInactiveFinalityProviderReverted) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventSluggishFinalityProviderReverted) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -310,7 +310,7 @@ func (m *EventSlashedFinalityProvider) Size() (n int) {
 	return n
 }
 
-func (m *EventInactiveFinalityProviderDetected) Size() (n int) {
+func (m *EventSluggishFinalityProviderDetected) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -323,7 +323,7 @@ func (m *EventInactiveFinalityProviderDetected) Size() (n int) {
 	return n
 }
 
-func (m *EventInactiveFinalityProviderReverted) Size() (n int) {
+func (m *EventSluggishFinalityProviderReverted) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -428,7 +428,7 @@ func (m *EventSlashedFinalityProvider) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventInactiveFinalityProviderDetected) Unmarshal(dAtA []byte) error {
+func (m *EventSluggishFinalityProviderDetected) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -451,10 +451,10 @@ func (m *EventInactiveFinalityProviderDetected) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventInactiveFinalityProviderDetected: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventSluggishFinalityProviderDetected: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventInactiveFinalityProviderDetected: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventSluggishFinalityProviderDetected: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -510,7 +510,7 @@ func (m *EventInactiveFinalityProviderDetected) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventInactiveFinalityProviderReverted) Unmarshal(dAtA []byte) error {
+func (m *EventSluggishFinalityProviderReverted) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -533,10 +533,10 @@ func (m *EventInactiveFinalityProviderReverted) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventInactiveFinalityProviderReverted: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventSluggishFinalityProviderReverted: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventInactiveFinalityProviderReverted: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventSluggishFinalityProviderReverted: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
