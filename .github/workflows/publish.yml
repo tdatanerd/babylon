@@ -16,7 +16,7 @@ jobs:
       run-integration-tests: true
       run-lint: true
       integration-tests-command: |
-        "sudo make test-e2e"
+        sudo make test-e2e
       
   docker_pipeline:
     uses: babylonchain/.github/.github/workflows/reusable_docker_pipeline.yml@hiep/add-reusable-workflows
