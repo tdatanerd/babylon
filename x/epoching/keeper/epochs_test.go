@@ -4,11 +4,12 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/babylonchain/babylon/testutil/datagen"
 	testhelper "github.com/babylonchain/babylon/testutil/helper"
 	"github.com/babylonchain/babylon/x/epoching/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/stretchr/testify/require"
 )
 
 func FuzzEpochs(f *testing.F) {
@@ -69,10 +70,13 @@ func FuzzEpochs_UpdateEpochInterval(f *testing.F) {
 		// get current epoch metadata
 		epoch := keeper.GetEpoch(h.Ctx)
 
-		// update the epoch interval in params
+		// update the epoch interval in params via gov prop account
 		newEpochInterval := datagen.RandomInt(r, 20) + 2
 		newParams := types.Params{EpochInterval: newEpochInterval}
-		err = keeper.SetParams(h.Ctx, newParams)
+		_, err = h.MsgSrvr.UpdateParams(h.Ctx, &types.MsgUpdateParams{
+			Authority: authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+			Params:    newParams,
+		})
 		require.NoError(t, err)
 
 		// ensure the current epoch metadata is not affected
@@ -82,12 +86,12 @@ func FuzzEpochs_UpdateEpochInterval(f *testing.F) {
 		// enter the last block of the current epoch
 		lastHeightOfEpoch := epoch.GetLastBlockHeight()
 		for uint64(h.Ctx.HeaderInfo().Height) < lastHeightOfEpoch {
-			_, err = h.ApplyEmptyBlockWithVoteExtension(r)
+			h.Ctx, err = h.ApplyEmptyBlockWithVoteExtension(r)
 			require.NoError(t, err)
 		}
-		// enter the next block and thus 1st block of the next epoch
-		_, err = h.ApplyEmptyBlockWithVoteExtension(r)
+		h.Ctx, err = h.ApplyEmptyBlockWithVoteExtension(r)
 		require.NoError(t, err)
+
 		// ensure
 		// - the epoch has incremented
 		// - epoch interval is updated
