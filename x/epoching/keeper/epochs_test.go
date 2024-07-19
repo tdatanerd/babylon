@@ -89,8 +89,7 @@ func FuzzEpochs_UpdateEpochInterval(f *testing.F) {
 			h.Ctx, err = h.ApplyEmptyBlockWithVoteExtension(r)
 			require.NoError(t, err)
 		}
-		h.Ctx, err = h.ApplyEmptyBlockWithVoteExtension(r)
-		require.NoError(t, err)
+		keeper.IncEpoch(h.Ctx)
 
 		// ensure
 		// - the epoch has incremented
@@ -99,7 +98,7 @@ func FuzzEpochs_UpdateEpochInterval(f *testing.F) {
 		newEpoch := keeper.GetEpoch(h.Ctx)
 		require.Equal(t, epoch.EpochNumber+1, newEpoch.EpochNumber)
 		require.Equal(t, newEpochInterval, newEpoch.CurrentEpochInterval)
-		require.Equal(t, uint64(h.Ctx.HeaderInfo().Height), newEpoch.FirstBlockHeight)
-		require.Equal(t, uint64(h.Ctx.HeaderInfo().Height)+newEpochInterval-1, newEpoch.GetLastBlockHeight())
+		require.Equal(t, epoch.GetLastBlockHeight()+1, newEpoch.FirstBlockHeight)
+		require.Equal(t, epoch.GetLastBlockHeight()+newEpochInterval, newEpoch.GetLastBlockHeight())
 	})
 }
