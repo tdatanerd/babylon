@@ -349,6 +349,25 @@ func (n *NodeConfig) TxMultisignBroadcast(walletNameMultisig, txFileFullPath str
 	n.TxBroadcast(signedTxToBroadcast)
 }
 
+func (n *NodeConfig) TxGovPropSubmitProposal(proposalJsonFilePath, from string, overallFlags ...string) int {
+	n.LogActionF("submitting new v1 proposal type %s", proposalJsonFilePath)
+
+	cmd := []string{
+		"babylond", "tx", "gov", "submit-proposal", proposalJsonFilePath,
+		fmt.Sprintf("--from=%s", from),
+		n.FlagChainID(),
+	}
+
+	_, _, err := n.containerManager.ExecTxCmd(n.t, n.chainId, n.Name, append(cmd, overallFlags...))
+	require.NoError(n.t, err)
+
+	n.WaitForNextBlocks(2)
+	props := n.QueryProposals()
+
+	n.LogActionF("successfully submitted new v1 proposal type")
+	return int(props.Proposals[len(props.Proposals)-1].ProposalId)
+}
+
 // WriteFile writes a new file in the config dir of the node where it is volume mounted to the
 // babylon home inside the container and returns the full file path inside the container.
 func (n *NodeConfig) WriteFile(fileName, content string) (fullFilePathInContainer string) {
