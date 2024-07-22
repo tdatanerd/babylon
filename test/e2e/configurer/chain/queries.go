@@ -19,6 +19,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/stretchr/testify/require"
 
 	"github.com/babylonchain/babylon/test/e2e/util"
@@ -404,6 +405,31 @@ func (n *NodeConfig) QueryWasmSmart(contract string, msg string, result any) err
 		return err
 	}
 	return nil
+}
+
+func (n *NodeConfig) QueryProposal(proposalNumber int) (govtypesv1.QueryProposalResponse, error) {
+	path := fmt.Sprintf("cosmos/gov/v1beta1/proposals/%d", proposalNumber)
+	bz, err := n.QueryGRPCGateway(path, url.Values{})
+	require.NoError(n.t, err)
+
+	var resp govtypesv1.QueryProposalResponse
+	err = util.Cdc.UnmarshalJSON(bz, &resp)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+func (n *NodeConfig) QueryProposals() govtypesv1.QueryProposalsResponse {
+	bz, err := n.QueryGRPCGateway("cosmos/gov/v1beta1/proposals", url.Values{})
+	require.NoError(n.t, err)
+
+	var resp govtypesv1.QueryProposalsResponse
+	err = util.Cdc.UnmarshalJSON(bz, &resp)
+	require.NoError(n.t, err)
+
+	return resp
 }
 
 func (n *NodeConfig) QueryWasmSmartObject(contract string, msg string) (resultObject map[string]interface{}, err error) {
