@@ -321,17 +321,17 @@ func (m *Manager) RemoveNodeResource(containerName string) error {
 }
 
 // ClearResources removes all outstanding Docker resources created by the Manager.
-func (m *Manager) ClearResources() error {
+func (m *Manager) ClearResources() (e error) {
 	for _, resource := range m.resources {
 		if err := m.pool.Purge(resource); err != nil {
-			return err
+			e = err
 		}
 	}
 
 	if err := m.pool.RemoveNetwork(m.network); err != nil {
-		return err
+		e = err
 	}
-	return nil
+	return e
 }
 
 func noRestart(config *docker.HostConfig) {
