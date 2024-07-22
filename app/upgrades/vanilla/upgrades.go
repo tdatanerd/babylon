@@ -32,7 +32,6 @@ func CreateUpgradeHandler(
 	keepers *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
 	return func(context context.Context, _plan upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-
 		ctx := sdk.UnwrapSDKContext(context)
 
 		propVanilla(ctx, &keepers.AccountKeeper, &keepers.BTCStakingKeeper)
