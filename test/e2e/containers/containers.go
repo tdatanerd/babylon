@@ -13,6 +13,7 @@ import (
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -264,6 +265,7 @@ func (m *Manager) RunNodeResource(chainId string, containerName, valCondifDir st
 		Mounts: []string{
 			fmt.Sprintf("%s/:%s", valCondifDir, BabylonHomePath),
 			fmt.Sprintf("%s/bytecode:/bytecode", pwd),
+			fmt.Sprintf("%s/upgrades:/upgrades", pwd),
 		},
 	}
 
@@ -322,16 +324,19 @@ func (m *Manager) RemoveNodeResource(containerName string) error {
 
 // ClearResources removes all outstanding Docker resources created by the Manager.
 func (m *Manager) ClearResources() (e error) {
+	g := new(errgroup.Group)
 	for _, resource := range m.resources {
-		if err := m.pool.Purge(resource); err != nil {
-			e = err
-		}
+		resource := resource
+		g.Go(func() error {
+			return m.pool.Purge(resource)
+		})
 	}
 
-	if err := m.pool.RemoveNetwork(m.network); err != nil {
-		e = err
-	}
-	return e
+	g.Go(func() error {
+		return m.pool.RemoveNetwork(m.network)
+	})
+
+	return g.Wait()
 }
 
 func noRestart(config *docker.HostConfig) {
