@@ -18,7 +18,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	staketypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/gogoproto/proto"
@@ -218,7 +218,7 @@ func initGenesis(chain *internalChain, votingPeriod, expeditedVotingPeriod time.
 		return err
 	}
 
-	err = updateModuleGenesis(appGenState, govtypes.ModuleName, &govv1beta1.GenesisState{}, updateGovGenesis)
+	err = updateModuleGenesis(appGenState, govtypes.ModuleName, &govv1.GenesisState{}, updateGovGenesis)
 	if err != nil {
 		return err
 	}
@@ -295,8 +295,11 @@ func updateBankGenesis(bankGenState *banktypes.GenesisState) {
 	})
 }
 
-func updateGovGenesis(govGenState *govv1beta1.GenesisState) {
-	govGenState.DepositParams.MinDeposit = sdk.NewCoins(sdk.NewCoin(BabylonDenom, sdkmath.NewInt(100)))
+func updateGovGenesis(govGenState *govv1.GenesisState) {
+	govGenState.Params.MinDeposit = sdk.NewCoins(sdk.NewCoin(BabylonDenom, sdkmath.NewInt(100)))
+
+	votingPeriod := time.Duration(time.Second * 10)
+	govGenState.Params.VotingPeriod = &votingPeriod
 }
 
 func updateMintGenesis(mintGenState *minttypes.GenesisState) {
