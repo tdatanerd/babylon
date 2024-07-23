@@ -94,6 +94,7 @@ import (
 	"github.com/spf13/cast"
 
 	"github.com/babylonchain/babylon/app/upgrades"
+	"github.com/babylonchain/babylon/app/upgrades/vanilla"
 	bbn "github.com/babylonchain/babylon/types"
 
 	appkeepers "github.com/babylonchain/babylon/app/keepers"
@@ -158,7 +159,7 @@ var (
 	}
 
 	// software upgrades and forks
-	Upgrades = []upgrades.Upgrade{}
+	Upgrades = []upgrades.Upgrade{vanilla.Upgrade}
 	Forks    = []upgrades.Fork{}
 )
 

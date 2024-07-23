@@ -11,8 +11,8 @@ import (
 	"github.com/babylonchain/babylon/app/keepers"
 	"github.com/babylonchain/babylon/app/upgrades"
 	bbn "github.com/babylonchain/babylon/types"
-	btcstakingkeeper "github.com/babylonchain/babylon/x/btcstaking/keeper"
 	bstypes "github.com/babylonchain/babylon/x/btcstaking/types"
+	etypes "github.com/babylonchain/babylon/x/epoching/types"
 	"github.com/btcsuite/btcd/btcec/v2"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -35,7 +35,7 @@ func CreateUpgradeHandler(
 
 		ctx := sdk.UnwrapSDKContext(context)
 
-		propVanilla(ctx, &keepers.AccountKeeper, &keepers.BTCStakingKeeper)
+		propVanilla(ctx, &keepers.AccountKeeper, keepers)
 
 		return mm.RunMigrations(ctx, cfg, fromVM)
 	}
@@ -44,7 +44,7 @@ func CreateUpgradeHandler(
 func propVanilla(
 	ctx sdk.Context,
 	accountKeeper *authkeeper.AccountKeeper,
-	bsKeeper *btcstakingkeeper.Keeper,
+	keepers *keepers.AppKeepers,
 ) {
 	// remove an account
 	allAccounts := accountKeeper.GetAllAccounts(ctx)
@@ -60,5 +60,11 @@ func propVanilla(
 		Addr:  allAccounts[0].GetAddress().String(),
 		BtcPk: btcPK,
 	}
-	bsKeeper.SetFinalityProvider(ctx, fp)
+	keepers.BTCStakingKeeper.SetFinalityProvider(ctx, fp)
+
+	// update the epoch interval
+	err = keepers.EpochingKeeper.SetParams(ctx, etypes.Params{EpochInterval: 15})
+	if err != nil {
+		panic(err)
+	}
 }
