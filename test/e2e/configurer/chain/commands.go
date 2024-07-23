@@ -377,7 +377,7 @@ func (n *NodeConfig) TxGovVote(from string, propID int, option govv1.VoteOption,
 	n.LogActionF("submitting vote %s to prop %d", option, propID)
 
 	cmd := []string{
-		"babylond", "tx", "gov", "vote", string(propID), option.String(),
+		"babylond", "tx", "gov", "vote", fmt.Sprintf("%d", propID), option.String(),
 		fmt.Sprintf("--from=%s", from),
 	}
 

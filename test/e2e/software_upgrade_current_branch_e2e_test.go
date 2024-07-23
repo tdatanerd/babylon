@@ -1,6 +1,8 @@
 package e2e
 
 import (
+	"fmt"
+
 	govv1 "cosmossdk.io/api/cosmos/gov/v1"
 	"github.com/stretchr/testify/suite"
 
@@ -49,6 +51,8 @@ func (s *SoftwareUpgradeCurrentBranchTestSuite) Test1UpgradeVanilla() {
 	nonValidatorNode, err := chainA.GetNodeAtIndex(2)
 	s.NoError(err)
 
+	fpsBeforeUpgrade := nonValidatorNode.QueryFinalityProviders()
+
 	// software upgrade gov prop
 	propID := nonValidatorNode.TxGovPropSubmitProposal(vanillaUpgradeFilePath, nonValidatorNode.WalletName)
 	s.Equal(1, propID)
@@ -56,8 +60,26 @@ func (s *SoftwareUpgradeCurrentBranchTestSuite) Test1UpgradeVanilla() {
 	// vote from all nodes
 	chainA.TxGovVoteFromAllNodes(propID, govv1.VoteOption_VOTE_OPTION_YES)
 
-	// waits for block to reach + 1
-	nonValidatorNode.WaitForBlockHeight(11)
+	tx := nonValidatorNode.QueryProposal(propID)
+	fmt.Printf("\n prop %+v", tx)
+
+	// waits for block to reach from plan + 1
+	// tricky to get current heigth and set it in the json, because the file is
+	// load at the mounting point of the node it could be created at runtime and
+	// stored in the filesystem of the container
+	nonValidatorNode.WaitForBlockHeight(21)
+
+	tx = nonValidatorNode.QueryProposal(propID)
+	fmt.Printf("\n prop %+v", tx)
 
 	// verifies vanilla upgrade was completed
+	fpsAfterUpgrade := nonValidatorNode.QueryFinalityProviders()
+	s.Equal(len(fpsBeforeUpgrade)+1, len(fpsAfterUpgrade))
+
+	// docker logs -f
+	// [90m2:09AM[0m [31mERR[0m [1mBINARY UPDATED BEFORE TRIGGER! UPGRADE "vanilla" - in binary but not executed on chain. Downgrade your binary[0m [36mmodule=[0mx/upgrade
+	// [90m2:09AM[0m [31mERR[0m [1merror in proxyAppConn.FinalizeBlock[0m [36merr=[0m"BINARY UPDATED BEFORE TRIGGER! UPGRADE \"vanilla\" - in binary but not executed on chain. Downgrade your binary" [36mmodule=[0mstate
+	tx = nonValidatorNode.QueryProposal(propID)
+	fmt.Printf("\n prop %+v", tx)
+
 }

@@ -36,7 +36,7 @@ func TestBTCStakingTestSuite(t *testing.T) {
 	suite.Run(t, new(BTCStakingTestSuite))
 }
 
-// TestSoftwareUpgradeTestSuite tests software upgrade protocol end-to-end
-func TestSoftwareUpgradeTestSuite(t *testing.T) {
+// TestSoftwareUpgradeCurrentBranchTestSuite tests software upgrade protocol end-to-end
+func TestSoftwareUpgradeCurrentBranchTestSuite(t *testing.T) {
 	suite.Run(t, new(SoftwareUpgradeCurrentBranchTestSuite))
 }

@@ -407,18 +407,16 @@ func (n *NodeConfig) QueryWasmSmart(contract string, msg string, result any) err
 	return nil
 }
 
-func (n *NodeConfig) QueryProposal(proposalNumber int) (govtypesv1.QueryProposalResponse, error) {
+func (n *NodeConfig) QueryProposal(proposalNumber int) govtypesv1.QueryProposalResponse {
 	path := fmt.Sprintf("cosmos/gov/v1beta1/proposals/%d", proposalNumber)
 	bz, err := n.QueryGRPCGateway(path, url.Values{})
 	require.NoError(n.t, err)
 
 	var resp govtypesv1.QueryProposalResponse
 	err = util.Cdc.UnmarshalJSON(bz, &resp)
-	if err != nil {
-		return resp, err
-	}
+	require.NoError(n.t, err)
 
-	return resp, nil
+	return resp
 }
 
 func (n *NodeConfig) QueryProposals() govtypesv1.QueryProposalsResponse {
