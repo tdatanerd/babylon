@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	govv1 "cosmossdk.io/api/cosmos/gov/v1"
 	txformat "github.com/babylonchain/babylon/btctxformatter"
 	"github.com/babylonchain/babylon/test/e2e/containers"
 	"github.com/babylonchain/babylon/test/e2e/initialization"
@@ -349,23 +350,41 @@ func (n *NodeConfig) TxMultisignBroadcast(walletNameMultisig, txFileFullPath str
 	n.TxBroadcast(signedTxToBroadcast)
 }
 
+// TxGovPropSubmitProposal submits a governance proposal from the file inside the container,
+// if the file is local, remind to add it to the mounting point in container.
 func (n *NodeConfig) TxGovPropSubmitProposal(proposalJsonFilePath, from string, overallFlags ...string) int {
 	n.LogActionF("submitting new v1 proposal type %s", proposalJsonFilePath)
 
 	cmd := []string{
 		"babylond", "tx", "gov", "submit-proposal", proposalJsonFilePath,
 		fmt.Sprintf("--from=%s", from),
-		n.FlagChainID(),
 	}
 
 	_, _, err := n.containerManager.ExecTxCmd(n.t, n.chainId, n.Name, append(cmd, overallFlags...))
 	require.NoError(n.t, err)
 
-	n.WaitForNextBlocks(2)
+	n.WaitForNextBlock()
+
 	props := n.QueryProposals()
+	require.GreaterOrEqual(n.t, len(props.Proposals), 1)
 
 	n.LogActionF("successfully submitted new v1 proposal type")
 	return int(props.Proposals[len(props.Proposals)-1].ProposalId)
+}
+
+// TxGovVote votes in a governance proposal
+func (n *NodeConfig) TxGovVote(from string, propID int, option govv1.VoteOption, overallFlags ...string) {
+	n.LogActionF("submitting vote %s to prop %d", option, propID)
+
+	cmd := []string{
+		"babylond", "tx", "gov", "vote", string(propID), option.String(),
+		fmt.Sprintf("--from=%s", from),
+	}
+
+	_, _, err := n.containerManager.ExecTxCmd(n.t, n.chainId, n.Name, append(cmd, overallFlags...))
+	require.NoError(n.t, err)
+
+	n.LogActionF("successfully submitted vote %s to prop %d", option, propID)
 }
 
 // WriteFile writes a new file in the config dir of the node where it is volume mounted to the

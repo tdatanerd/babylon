@@ -1,23 +1,10 @@
 package e2e
 
 import (
+	govv1 "cosmossdk.io/api/cosmos/gov/v1"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/babylonchain/babylon/test/e2e/configurer"
-)
-
-var (
-// r = rand.New(rand.NewSource(time.Now().Unix()))
-// net = &chaincfg.SimNetParams
-// // finality provider
-// fpBTCSK, _, _ = datagen.GenRandomBTCKeyPair(r)
-// cacheFP       *bstypes.FinalityProvider
-// // BTC delegation
-// delBTCSK, delBTCPK, _ = datagen.GenRandomBTCKeyPair(r)
-// // covenant
-// covenantSKs, _, covenantQuorum = bstypes.DefaultCovenantCommittee()
-
-// stakingValue = int64(2 * 10e8)
 )
 
 const (
@@ -62,9 +49,15 @@ func (s *SoftwareUpgradeCurrentBranchTestSuite) Test1UpgradeVanilla() {
 	nonValidatorNode, err := chainA.GetNodeAtIndex(2)
 	s.NoError(err)
 
+	// software upgrade gov prop
 	propID := nonValidatorNode.TxGovPropSubmitProposal(vanillaUpgradeFilePath, nonValidatorNode.WalletName)
 	s.Equal(1, propID)
-	// run software upgrade gov prop
-	// waits for block to reach
-	// verifies if vanilla update was done
+
+	// vote from all nodes
+	chainA.TxGovVoteFromAllNodes(propID, govv1.VoteOption_VOTE_OPTION_YES)
+
+	// waits for block to reach + 1
+	nonValidatorNode.WaitForBlockHeight(11)
+
+	// verifies vanilla upgrade was completed
 }
