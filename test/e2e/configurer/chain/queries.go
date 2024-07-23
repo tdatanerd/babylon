@@ -439,3 +439,19 @@ func (n *NodeConfig) QueryWasmSmartObject(contract string, msg string) (resultOb
 	}
 	return resultObject, nil
 }
+
+func (n *NodeConfig) QueryTx(txHash string, overallFlags ...string) sdk.TxResponse {
+	cmd := []string{
+		"babylond", "q", "tx", "--type=hash", txHash, "--output=json",
+		n.FlagChainID(),
+	}
+
+	out, _, err := n.containerManager.ExecCmd(n.t, n.Name, append(cmd, overallFlags...), "")
+	require.NoError(n.t, err)
+
+	var txResp sdk.TxResponse
+	err = util.Cdc.UnmarshalJSON(out.Bytes(), &txResp)
+	require.NoError(n.t, err)
+
+	return txResp
+}
