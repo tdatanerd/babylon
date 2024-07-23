@@ -58,7 +58,7 @@ func (k Keeper) ProveEpochSealed(ctx context.Context, epochNumber uint64) (*type
 	}
 
 	// get sealer header and the query height
-	epoch, err := k.epochingKeeper.GetHistoricalEpoch(ctx, epochNumber)
+	epoch, err := k.epochingKeeper.GetEpochInfo(ctx, epochNumber)
 	if err != nil {
 		return nil, err
 	}

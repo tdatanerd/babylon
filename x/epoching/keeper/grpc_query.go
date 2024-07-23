@@ -45,7 +45,7 @@ func (k Keeper) CurrentEpoch(c context.Context, req *types.QueryCurrentEpochRequ
 // EpochInfo handles the QueryEpochInfoRequest query
 func (k Keeper) EpochInfo(c context.Context, req *types.QueryEpochInfoRequest) (*types.QueryEpochInfoResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	epoch, err := k.GetHistoricalEpoch(ctx, req.EpochNum)
+	epoch, err := k.GetEpochInfo(ctx, req.EpochNum)
 	if err != nil {
 		return nil, err
 	}

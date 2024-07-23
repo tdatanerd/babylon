@@ -62,9 +62,15 @@ func propVanilla(
 	}
 	keepers.BTCStakingKeeper.SetFinalityProvider(ctx, fp)
 
-	// update the epoch interval
-	err = keepers.EpochingKeeper.SetParams(ctx, etypes.Params{EpochInterval: 15})
+	// update the epoch interval (assuming the epoch interval is larger than the current height)
+	newEpochInterval := uint64(70)
+	err = keepers.EpochingKeeper.SetParams(ctx, etypes.Params{EpochInterval: newEpochInterval})
 	if err != nil {
 		panic(err)
 	}
+	// override existing epoch metadata (assuming the current epoch with super
+	// big epoch interval is not finished yet)
+	curEpoch := keepers.EpochingKeeper.GetEpoch(ctx)
+	curEpoch.CurrentEpochInterval = newEpochInterval
+	keepers.EpochingKeeper.SetEpochInfo(ctx, curEpoch.EpochNumber, curEpoch)
 }

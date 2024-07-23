@@ -787,19 +787,19 @@ func (mr *MockEpochingKeeperMockRecorder) GetEpoch(ctx interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEpoch", reflect.TypeOf((*MockEpochingKeeper)(nil).GetEpoch), ctx)
 }
 
-// GetHistoricalEpoch mocks base method.
-func (m *MockEpochingKeeper) GetHistoricalEpoch(ctx context.Context, epochNumber uint64) (*types3.Epoch, error) {
+// GetEpochInfo mocks base method.
+func (m *MockEpochingKeeper) GetEpochInfo(ctx context.Context, epochNumber uint64) (*types3.Epoch, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetHistoricalEpoch", ctx, epochNumber)
+	ret := m.ctrl.Call(m, "GetEpochInfo", ctx, epochNumber)
 	ret0, _ := ret[0].(*types3.Epoch)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetHistoricalEpoch indicates an expected call of GetHistoricalEpoch.
-func (mr *MockEpochingKeeperMockRecorder) GetHistoricalEpoch(ctx, epochNumber interface{}) *gomock.Call {
+// GetEpochInfo indicates an expected call of GetEpochInfo.
+func (mr *MockEpochingKeeperMockRecorder) GetEpochInfo(ctx, epochNumber interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHistoricalEpoch", reflect.TypeOf((*MockEpochingKeeper)(nil).GetHistoricalEpoch), ctx, epochNumber)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEpochInfo", reflect.TypeOf((*MockEpochingKeeper)(nil).GetEpochInfo), ctx, epochNumber)
 }
 
 // MockCometClient is a mock of CometClient interface.

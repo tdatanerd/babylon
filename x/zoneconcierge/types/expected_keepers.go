@@ -101,7 +101,7 @@ type CheckpointingKeeper interface {
 }
 
 type EpochingKeeper interface {
-	GetHistoricalEpoch(ctx context.Context, epochNumber uint64) (*epochingtypes.Epoch, error)
+	GetEpochInfo(ctx context.Context, epochNumber uint64) (*epochingtypes.Epoch, error)
 	GetEpoch(ctx context.Context) *epochingtypes.Epoch
 }
 

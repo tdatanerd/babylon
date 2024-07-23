@@ -57,7 +57,7 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 			return bz, nil
 		case contractQuery.LatestFinalizedEpochInfo != nil:
 			epoch := qp.zcKeeper.GetLastFinalizedEpoch(ctx)
-			epochInfo, err := qp.epochingKeeper.GetHistoricalEpoch(ctx, epoch)
+			epochInfo, err := qp.epochingKeeper.GetEpochInfo(ctx, epoch)
 
 			if err != nil {
 				// Here something went really wrong with our data model. If epoch is finalized

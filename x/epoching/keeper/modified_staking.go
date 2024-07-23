@@ -24,7 +24,7 @@ func (k Keeper) ApplyMatureUnbonding(ctx context.Context, epochNumber uint64) {
 	currentSdkCtx := sdkCtx
 
 	// get the ctx of the last block of the given epoch, while offsetting the time to nullify UnbondingTime
-	finalizedEpoch, err := k.GetHistoricalEpoch(ctx, epochNumber)
+	finalizedEpoch, err := k.GetEpochInfo(ctx, epochNumber)
 	if err != nil {
 		panic(err)
 	}

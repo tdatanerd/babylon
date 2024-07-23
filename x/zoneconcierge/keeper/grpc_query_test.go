@@ -389,7 +389,7 @@ func FuzzFinalizedChainInfo(f *testing.F) {
 		// mock epoching keeper
 		epochingKeeper := zctypes.NewMockEpochingKeeper(ctrl)
 		epochingKeeper.EXPECT().GetEpoch(gomock.Any()).Return(epoch).AnyTimes()
-		epochingKeeper.EXPECT().GetHistoricalEpoch(gomock.Any(), gomock.Eq(epoch.EpochNumber)).Return(epoch, nil).AnyTimes()
+		epochingKeeper.EXPECT().GetEpochInfo(gomock.Any(), gomock.Eq(epoch.EpochNumber)).Return(epoch, nil).AnyTimes()
 		// mock btclc keeper
 		btclcKeeper := zctypes.NewMockBTCLightClientKeeper(ctrl)
 		mockBTCHeaderInfo := datagen.GenRandomBTCHeaderInfo(r)

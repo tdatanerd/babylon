@@ -50,7 +50,7 @@ func (k Keeper) getFinalizedInfo(
 	epochNum uint64,
 	headersToBroadcast []*btclctypes.BTCHeaderInfo,
 ) (*finalizedInfo, error) {
-	finalizedEpochInfo, err := k.epochingKeeper.GetHistoricalEpoch(ctx, epochNum)
+	finalizedEpochInfo, err := k.epochingKeeper.GetEpochInfo(ctx, epochNum)
 	if err != nil {
 		return nil, err
 	}

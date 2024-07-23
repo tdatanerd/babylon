@@ -272,7 +272,7 @@ func (k Keeper) FinalizedChainsInfo(c context.Context, req *types.QueryFinalized
 		data.FinalizedChainInfo = chainInfo
 
 		// find the epoch metadata of the finalised epoch
-		data.EpochInfo, err = k.epochingKeeper.GetHistoricalEpoch(ctx, finalizedEpoch)
+		data.EpochInfo, err = k.epochingKeeper.GetEpochInfo(ctx, finalizedEpoch)
 		if err != nil {
 			return nil, err
 		}
@@ -338,7 +338,7 @@ func (k Keeper) FinalizedChainInfoUntilHeight(c context.Context, req *types.Quer
 
 	if chainInfo.LatestHeader.Height <= req.Height { // the requested height is after the last finalised chain info
 		// find and assign the epoch metadata of the finalised epoch
-		resp.EpochInfo, err = k.epochingKeeper.GetHistoricalEpoch(ctx, finalizedEpoch)
+		resp.EpochInfo, err = k.epochingKeeper.GetEpochInfo(ctx, finalizedEpoch)
 		if err != nil {
 			return nil, err
 		}
@@ -369,7 +369,7 @@ func (k Keeper) FinalizedChainInfoUntilHeight(c context.Context, req *types.Quer
 			return nil, err
 		}
 		resp.FinalizedChainInfo = chainInfoWithProof.ChainInfo
-		resp.EpochInfo, err = k.epochingKeeper.GetHistoricalEpoch(ctx, finalizedEpoch)
+		resp.EpochInfo, err = k.epochingKeeper.GetEpochInfo(ctx, finalizedEpoch)
 		if err != nil {
 			return nil, err
 		}

@@ -78,7 +78,7 @@ func FuzzBTCTimestamp(f *testing.F) {
 		h.Ctx, err = h.ApplyEmptyBlockWithVoteExtension(r)
 		h.NoError(err)
 
-		epochWithHeader, err := ek.GetHistoricalEpoch(h.Ctx, indexedHeader.BabylonEpoch)
+		epochWithHeader, err := ek.GetEpochInfo(h.Ctx, indexedHeader.BabylonEpoch)
 		h.NoError(err)
 
 		// generate inclusion proof

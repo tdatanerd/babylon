@@ -57,7 +57,7 @@ func FuzzProofCZHeaderInEpoch(f *testing.F) {
 			h.NoError(err)
 		}
 
-		epochWithHeader, err := ek.GetHistoricalEpoch(h.Ctx, indexedHeader.BabylonEpoch)
+		epochWithHeader, err := ek.GetEpochInfo(h.Ctx, indexedHeader.BabylonEpoch)
 		h.NoError(err)
 
 		// generate inclusion proof
@@ -135,7 +135,7 @@ func FuzzProofEpochSealed_BLSSig(f *testing.F) {
 		// mock epoching keeper
 		epochingKeeper := zctypes.NewMockEpochingKeeper(ctrl)
 		epochingKeeper.EXPECT().GetEpoch(gomock.Any()).Return(epoch).AnyTimes()
-		epochingKeeper.EXPECT().GetHistoricalEpoch(gomock.Any(), gomock.Eq(epoch.EpochNumber)).Return(epoch, nil).AnyTimes()
+		epochingKeeper.EXPECT().GetEpochInfo(gomock.Any(), gomock.Eq(epoch.EpochNumber)).Return(epoch, nil).AnyTimes()
 		// create zcKeeper and ctx
 		zcKeeper, ctx := testkeeper.ZoneConciergeKeeper(t, nil, checkpointingKeeper, nil, epochingKeeper)
 
@@ -182,7 +182,7 @@ func FuzzProofEpochSealed_Epoch(f *testing.F) {
 		// prove the inclusion of last epoch
 		lastEpochNumber := ek.GetEpoch(h.Ctx).EpochNumber - 1
 		h.NoError(err)
-		lastEpoch, err := ek.GetHistoricalEpoch(h.Ctx, lastEpochNumber)
+		lastEpoch, err := ek.GetEpochInfo(h.Ctx, lastEpochNumber)
 		h.NoError(err)
 		proof, err := zck.ProveEpochInfo(lastEpoch)
 		h.NoError(err)
@@ -224,7 +224,7 @@ func FuzzProofEpochSealed_ValSet(f *testing.F) {
 		// prove the inclusion of last epoch
 		lastEpochNumber := ek.GetEpoch(h.Ctx).EpochNumber - 1
 		h.NoError(err)
-		lastEpoch, err := ek.GetHistoricalEpoch(h.Ctx, lastEpochNumber)
+		lastEpoch, err := ek.GetEpochInfo(h.Ctx, lastEpochNumber)
 		h.NoError(err)
 		lastEpochValSet := ck.GetValidatorBlsKeySet(h.Ctx, lastEpochNumber)
 		proof, err := zck.ProveValSet(lastEpoch)
