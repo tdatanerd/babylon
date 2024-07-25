@@ -39,7 +39,7 @@ type Manager struct {
 
 // NewManager creates a new Manager instance and initializes
 // all Docker specific utilities. Returns an error if initialization fails.
-func NewManager(isDebugLogEnabled bool, isCosmosRelayer bool) (docker *Manager, err error) {
+func NewManager(networkIdentifier string, isDebugLogEnabled bool, isCosmosRelayer bool) (docker *Manager, err error) {
 	docker = &Manager{
 		ImageConfig:       NewImageConfig(isCosmosRelayer),
 		resources:         make(map[string]*dockertest.Resource),
@@ -49,7 +49,7 @@ func NewManager(isDebugLogEnabled bool, isCosmosRelayer bool) (docker *Manager, 
 	if err != nil {
 		return nil, err
 	}
-	docker.network, err = docker.pool.CreateNetwork("bbn-testnet")
+	docker.network, err = docker.pool.CreateNetwork(fmt.Sprintf("bbn-testnet-%s", networkIdentifier))
 	if err != nil {
 		return nil, err
 	}
