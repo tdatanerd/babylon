@@ -166,7 +166,7 @@ func (bc *baseConfigurer) RunIBCTransferChannel() error {
 func (bc *baseConfigurer) runHermesIBCRelayer(chainConfigA *chain.Config, chainConfigB *chain.Config) error {
 	bc.t.Log("starting Hermes relayer container...")
 
-	tmpDir, err := os.MkdirTemp("", "bbn-e2e-testnet-hermes-")
+	tmpDir, err := os.MkdirTemp("", "bbn-e2e-testnet-hermes-*")
 	if err != nil {
 		return err
 	}
@@ -248,7 +248,7 @@ func (bc *baseConfigurer) runHermesIBCRelayer(chainConfigA *chain.Config, chainC
 func (bc *baseConfigurer) runCosmosIBCRelayer(chainConfigA *chain.Config, chainConfigB *chain.Config) error {
 	bc.t.Log("Starting Cosmos relayer container...")
 
-	tmpDir, err := os.MkdirTemp("", "bbn-e2e-testnet-cosmos-")
+	tmpDir, err := os.MkdirTemp("", "bbn-e2e-testnet-cosmos-*")
 	if err != nil {
 		return err
 	}
