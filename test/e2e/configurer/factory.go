@@ -1,6 +1,7 @@
 package configurer
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/babylonchain/babylon/test/e2e/configurer/chain"
@@ -114,15 +115,16 @@ var (
 // TODO currently only one configuration is available. Consider testing upgrades
 // when necessary
 func NewBTCTimestampingConfigurer(t *testing.T, isDebugLogEnabled bool) (Configurer, error) {
-	containerManager, err := containers.NewManager("btc-timestamp", isDebugLogEnabled, false)
+	identifier := "btc-timestamp"
+	containerManager, err := containers.NewManager(identifier, isDebugLogEnabled, false)
 	if err != nil {
 		return nil, err
 	}
 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
-			chain.New(t, containerManager, initialization.ChainAID, validatorConfigsChainA, ibcConfigChainA),
-			chain.New(t, containerManager, initialization.ChainBID, validatorConfigsChainB, ibcConfigChainB),
+			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
+			chain.New(t, containerManager, initialization.ChainBID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
 		},
 		withIBC(baseSetup), // base set up with IBC
 		containerManager,
@@ -130,15 +132,16 @@ func NewBTCTimestampingConfigurer(t *testing.T, isDebugLogEnabled bool) (Configu
 }
 
 func NewIBCTransferConfigurer(t *testing.T, isDebugLogEnabled bool) (Configurer, error) {
-	containerManager, err := containers.NewManager("ibc-transfer", isDebugLogEnabled, false)
+	identifier := "ibc-transfer"
+	containerManager, err := containers.NewManager(identifier, isDebugLogEnabled, false)
 	if err != nil {
 		return nil, err
 	}
 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
-			chain.New(t, containerManager, initialization.ChainAID, validatorConfigsChainA, ibcConfigChainA),
-			chain.New(t, containerManager, initialization.ChainBID, validatorConfigsChainB, ibcConfigChainB),
+			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
+			chain.New(t, containerManager, initialization.ChainBID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
 		},
 		withIBCTransferChannel(baseSetup), // base set up with IBC
 		containerManager,
@@ -147,15 +150,16 @@ func NewIBCTransferConfigurer(t *testing.T, isDebugLogEnabled bool) (Configurer,
 
 // NewBTCTimestampingPhase2Configurer returns a new Configurer for BTC timestamping service (phase 2).
 func NewBTCTimestampingPhase2Configurer(t *testing.T, isDebugLogEnabled bool) (Configurer, error) {
-	containerManager, err := containers.NewManager("btc-timestamping", isDebugLogEnabled, false)
+	identifier := "btc-timestamping"
+	containerManager, err := containers.NewManager(identifier, isDebugLogEnabled, false)
 	if err != nil {
 		return nil, err
 	}
 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
-			chain.New(t, containerManager, initialization.ChainAID, validatorConfigsChainA, ibcConfigChainA),
-			chain.New(t, containerManager, initialization.ChainBID, validatorConfigsChainB, ibcConfigChainB),
+			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
+			chain.New(t, containerManager, initialization.ChainBID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
 		},
 		withPhase2IBC(baseSetup), // IBC setup (requires contract address)
 		containerManager,
@@ -164,15 +168,16 @@ func NewBTCTimestampingPhase2Configurer(t *testing.T, isDebugLogEnabled bool) (C
 
 // NewBTCTimestampingPhase2RlyConfigurer returns a new Configurer for BTC timestamping service (phase 2), using the Go relayer (rly).
 func NewBTCTimestampingPhase2RlyConfigurer(t *testing.T, isDebugLogEnabled bool) (Configurer, error) {
-	containerManager, err := containers.NewManager("btc-timestamping-rly", isDebugLogEnabled, true)
+	identifier := "btc-timestamping-rly"
+	containerManager, err := containers.NewManager(identifier, isDebugLogEnabled, true)
 	if err != nil {
 		return nil, err
 	}
 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
-			chain.New(t, containerManager, initialization.ChainAID, validatorConfigsChainA, ibcConfigChainA),
-			chain.New(t, containerManager, initialization.ChainBID, validatorConfigsChainB, ibcConfigChainB),
+			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
+			chain.New(t, containerManager, initialization.ChainBID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
 		},
 		withPhase2RlyIBC(baseSetup), // IBC setup with wasmd and Go relayer
 		containerManager,
@@ -181,7 +186,8 @@ func NewBTCTimestampingPhase2RlyConfigurer(t *testing.T, isDebugLogEnabled bool)
 
 // NewBTCStakingConfigurer returns a new Configurer for BTC staking service
 func NewBTCStakingConfigurer(t *testing.T, isDebugLogEnabled bool) (Configurer, error) {
-	containerManager, err := containers.NewManager("btc-staking", isDebugLogEnabled, false)
+	identifier := "btc-staking"
+	containerManager, err := containers.NewManager(identifier, isDebugLogEnabled, false)
 	if err != nil {
 		return nil, err
 	}
@@ -189,9 +195,16 @@ func NewBTCStakingConfigurer(t *testing.T, isDebugLogEnabled bool) (Configurer, 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
 			// we only need 1 chain for testing BTC staking
-			chain.New(t, containerManager, initialization.ChainAID, validatorConfigsChainA, nil),
+			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), nil),
 		},
 		baseSetup, // base set up
 		containerManager,
 	), nil
+}
+
+func nodeConfigsWithIdentifier(identifier string, cfgs []*initialization.NodeConfig) []*initialization.NodeConfig {
+	for _, cfg := range cfgs {
+		cfg.Name = fmt.Sprintf("%s-%s", cfg.Name, identifier)
+	}
+	return cfgs
 }
