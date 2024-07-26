@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	govv1 "cosmossdk.io/api/cosmos/gov/v1"
 	txformat "github.com/babylonchain/babylon/btctxformatter"
 	"github.com/babylonchain/babylon/test/e2e/containers"
 	"github.com/babylonchain/babylon/test/e2e/initialization"
@@ -94,6 +95,10 @@ func (n *NodeConfig) BankSendFromNode(receiveAddress, amount string) {
 	n.BankSend(n.WalletName, receiveAddress, amount)
 }
 
+func (n *NodeConfig) BankMultiSendFromNode(addresses []string, amount string) {
+	n.BankMultiSend(n.WalletName, addresses, amount)
+}
+
 func (n *NodeConfig) BankSend(fromWallet, to, amount string, overallFlags ...string) {
 	fromAddr := n.GetWallet(fromWallet)
 	n.LogActionF("bank sending %s from wallet %s to %s", amount, fromWallet, to)
@@ -101,6 +106,23 @@ func (n *NodeConfig) BankSend(fromWallet, to, amount string, overallFlags ...str
 	_, _, err := n.containerManager.ExecTxCmd(n.t, n.chainId, n.Name, append(cmd, overallFlags...))
 	require.NoError(n.t, err)
 	n.LogActionF("successfully sent bank sent %s from address %s to %s", amount, fromWallet, to)
+}
+
+func (n *NodeConfig) BankMultiSend(fromWallet string, receivers []string, amount string, overallFlags ...string) {
+	if len(receivers) == 0 {
+		require.Error(n.t, fmt.Errorf("no address to send to"))
+	}
+
+	fromAddr := n.GetWallet(fromWallet)
+	n.LogActionF("bank multi-send sending %s from wallet %s to %+v", amount, fromWallet, receivers)
+
+	cmd := []string{"babylond", "tx", "bank", "multi-send", fromAddr} // starts the initial flags
+	cmd = append(cmd, receivers...)                                   // appends all the receivers
+	cmd = append(cmd, amount, fmt.Sprintf("--from=%s", fromWallet))   // set amounts and overall
+
+	_, _, err := n.containerManager.ExecTxCmd(n.t, n.chainId, n.Name, append(cmd, overallFlags...))
+	require.NoError(n.t, err)
+	n.LogActionF("successfully sent bank multi-send %s from address %s to %+v", amount, fromWallet, receivers)
 }
 
 func (n *NodeConfig) BankSendOutput(fromWallet, to, amount string, overallFlags ...string) (out bytes.Buffer, errBuff bytes.Buffer, err error) {
@@ -347,6 +369,43 @@ func (n *NodeConfig) TxMultisignBroadcast(walletNameMultisig, txFileFullPath str
 
 	signedTxToBroadcast := n.TxMultisign(walletNameMultisig, txFileFullPath, "tx-multisigned.json", signedFiles)
 	n.TxBroadcast(signedTxToBroadcast)
+}
+
+// TxGovPropSubmitProposal submits a governance proposal from the file inside the container,
+// if the file is local, remind to add it to the mounting point in container.
+func (n *NodeConfig) TxGovPropSubmitProposal(proposalJsonFilePath, from string, overallFlags ...string) int {
+	n.LogActionF("submitting new v1 proposal type %s", proposalJsonFilePath)
+
+	cmd := []string{
+		"babylond", "tx", "gov", "submit-proposal", proposalJsonFilePath,
+		fmt.Sprintf("--from=%s", from),
+	}
+
+	_, _, err := n.containerManager.ExecTxCmd(n.t, n.chainId, n.Name, append(cmd, overallFlags...))
+	require.NoError(n.t, err)
+
+	n.WaitForNextBlock()
+
+	props := n.QueryProposals()
+	require.GreaterOrEqual(n.t, len(props.Proposals), 1)
+
+	n.LogActionF("successfully submitted new v1 proposal type")
+	return int(props.Proposals[len(props.Proposals)-1].ProposalId)
+}
+
+// TxGovVote votes in a governance proposal
+func (n *NodeConfig) TxGovVote(from string, propID int, option govv1.VoteOption, overallFlags ...string) {
+	n.LogActionF("submitting vote %s to prop %d", option, propID)
+
+	cmd := []string{
+		"babylond", "tx", "gov", "vote", fmt.Sprintf("%d", propID), option.String(),
+		fmt.Sprintf("--from=%s", from),
+	}
+
+	_, _, err := n.containerManager.ExecTxCmd(n.t, n.chainId, n.Name, append(cmd, overallFlags...))
+	require.NoError(n.t, err)
+
+	n.LogActionF("successfully submitted vote %s to prop %d", option, propID)
 }
 
 // WriteFile writes a new file in the config dir of the node where it is volume mounted to the
