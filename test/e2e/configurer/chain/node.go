@@ -67,6 +67,8 @@ func (n *NodeConfig) Run() error {
 			// This fails if unsuccessful.
 			_, err := n.QueryCurrentHeight()
 			if err != nil {
+				st, _ := n.rpcClient.Status(context.Background())
+				n.t.Logf("failed to query current height, status %+v: %s", st, err.Error())
 				return false
 			}
 			n.t.Logf("started node container: %s", n.Name)
