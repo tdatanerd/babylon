@@ -123,8 +123,8 @@ func NewBTCTimestampingConfigurer(t *testing.T, isDebugLogEnabled bool) (Configu
 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
-			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
-			chain.New(t, containerManager, initialization.ChainBID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
+			chain.New(t, containerManager, initialization.ChainAID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
+			chain.New(t, containerManager, initialization.ChainBID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
 		},
 		withIBC(baseSetup), // base set up with IBC
 		containerManager,
@@ -140,8 +140,8 @@ func NewIBCTransferConfigurer(t *testing.T, isDebugLogEnabled bool) (Configurer,
 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
-			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
-			chain.New(t, containerManager, initialization.ChainBID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
+			chain.New(t, containerManager, initialization.ChainAID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
+			chain.New(t, containerManager, initialization.ChainBID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
 		},
 		withIBCTransferChannel(baseSetup), // base set up with IBC
 		containerManager,
@@ -158,8 +158,8 @@ func NewBTCTimestampingPhase2Configurer(t *testing.T, isDebugLogEnabled bool) (C
 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
-			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
-			chain.New(t, containerManager, initialization.ChainBID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
+			chain.New(t, containerManager, initialization.ChainAID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
+			chain.New(t, containerManager, initialization.ChainBID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
 		},
 		withPhase2IBC(baseSetup), // IBC setup (requires contract address)
 		containerManager,
@@ -176,8 +176,8 @@ func NewBTCTimestampingPhase2RlyConfigurer(t *testing.T, isDebugLogEnabled bool)
 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
-			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
-			chain.New(t, containerManager, initialization.ChainBID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
+			chain.New(t, containerManager, initialization.ChainAID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainA), ibcConfigChainA),
+			chain.New(t, containerManager, initialization.ChainBID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainB), ibcConfigChainB),
 		},
 		withPhase2RlyIBC(baseSetup), // IBC setup with wasmd and Go relayer
 		containerManager,
@@ -195,16 +195,25 @@ func NewBTCStakingConfigurer(t *testing.T, isDebugLogEnabled bool) (Configurer, 
 	return NewCurrentBranchConfigurer(t,
 		[]*chain.Config{
 			// we only need 1 chain for testing BTC staking
-			chain.New(t, containerManager, initialization.ChainAID, nodeConfigsWithIdentifier(identifier, validatorConfigsChainA), nil),
+			chain.New(t, containerManager, initialization.ChainAID, nodeCfgsWithIdentifier(identifier, validatorConfigsChainA), nil),
 		},
 		baseSetup, // base set up
 		containerManager,
 	), nil
 }
 
-func nodeConfigsWithIdentifier(identifier string, cfgs []*initialization.NodeConfig) []*initialization.NodeConfig {
-	for _, cfg := range cfgs {
-		cfg.Name = fmt.Sprintf("%s-%s", cfg.Name, identifier)
+func nodeCfgsWithIdentifier(identifier string, cfgs []*initialization.NodeConfig) []*initialization.NodeConfig {
+	newCfgs := make([]*initialization.NodeConfig, len(cfgs))
+	for i, cfg := range cfgs {
+		newCfgs[i] = &initialization.NodeConfig{
+			Name:               fmt.Sprintf("%s-%s", cfg.Name, identifier),
+			Pruning:            cfg.Pruning,
+			PruningKeepRecent:  cfg.PruningKeepRecent,
+			PruningInterval:    cfg.PruningInterval,
+			SnapshotInterval:   cfg.SnapshotInterval,
+			SnapshotKeepRecent: cfg.SnapshotKeepRecent,
+			IsValidator:        cfg.IsValidator,
+		}
 	}
-	return cfgs
+	return newCfgs
 }
