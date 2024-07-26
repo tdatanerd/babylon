@@ -70,6 +70,7 @@ func (n *NodeConfig) Run() error {
 			if err != nil {
 				st, errRpc := n.rpcClient.Status(context.Background())
 				n.t.Logf("failed to query current height, status %+v: %s", st)
+				n.t.Logf("Logpath: %s", resource.Container.LogPath)
 				if errRpc != nil {
 					n.t.Logf("errRpc: %s", errRpc.Error())
 				}
