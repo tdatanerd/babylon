@@ -257,12 +257,14 @@ func (m *Manager) RunNodeResource(chainId string, containerName, valCondifDir st
 		Name:       containerName,
 		Repository: m.CurrentRepository,
 		NetworkID:  m.network.Network.ID,
+		Networks:   []*dockertest.Network{m.network},
 		User:       "root:root",
 		Entrypoint: []string{
 			"sh",
 			"-c",
 			"babylond start " + FlagHome,
 		},
+		// TODO: verify if exposed ports need to be dinamic, since e2e might run in parallel
 		ExposedPorts: []string{"26656", "26657", "1317", "9090"},
 		Mounts: []string{
 			fmt.Sprintf("%s/:%s", valCondifDir, BabylonHomePath),
