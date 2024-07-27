@@ -7,6 +7,10 @@ all: babylond cosmos-relayer
 babylond: babylond-rmi
 	docker build --tag babylonchain/babylond -f babylond/Dockerfile ${BABYLON_FULL_PATH}
 
+babylond-e2e: babylond-rmi
+	docker build --tag babylonchain/babylond -f babylond/Dockerfile ${BABYLON_FULL_PATH} \
+		--build-arg BUILD_TAGS="e2e"
+
 babylond-before-upgrade:
 	docker rmi babylonchain/babylond-before-upgrade 2>/dev/null; true && \
 	docker build --tag babylonchain/babylond-before-upgrade -f babylond/Dockerfile \

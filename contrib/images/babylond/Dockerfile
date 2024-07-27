@@ -6,6 +6,7 @@ ARG VERSION
 ARG LEDGER_ENABLED="false"
 # Cosmos build options
 ARG COSMOS_BUILD_OPTIONS=""
+ARG BUILD_TAGS=""
 
 # Install cli tools for building and final image
 RUN apt-get update && apt-get install -y make git bash gcc curl jq
