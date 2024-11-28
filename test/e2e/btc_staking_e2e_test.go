@@ -3,6 +3,7 @@ package e2e
 import (
 	"encoding/hex"
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"time"
@@ -62,6 +63,7 @@ func (s *BTCStakingTestSuite) SetupSuite() {
 	s.NoError(err)
 	err = s.configurer.ConfigureChains()
 	s.NoError(err)
+	log.Println("RunSetup")
 	err = s.configurer.RunSetup()
 	s.NoError(err)
 }
@@ -74,6 +76,7 @@ func (s *BTCStakingTestSuite) TearDownSuite() {
 // Test1CreateFinalityProviderAndDelegation is an end-to-end test for
 // user story 1: user creates finality provider and BTC delegation
 func (s *BTCStakingTestSuite) Test1CreateFinalityProviderAndDelegation() {
+	log.Println("--- Start Test1CreateFinalityProviderAndDelegation ---")
 	chainA := s.configurer.GetChainConfig(0)
 	chainA.WaitUntilHeight(1)
 	nonValidatorNode, err := chainA.GetNodeAtIndex(2)
@@ -622,6 +625,7 @@ func (s *BTCStakingTestSuite) Test7BTCDelegationFeeGrant() {
 // to verify if the feeGrant is respected by the msg type and also spend limits. It also
 // utilizes the cacheFP populated at Test1CreateFinalityProviderAndDelegation.
 func (s *BTCStakingTestSuite) Test8BTCDelegationFeeGrantTyped() {
+	log.Println("Test8BTCDelegationFeeGrantTyped")
 	chainA := s.configurer.GetChainConfig(0)
 	chainA.WaitUntilHeight(1)
 	node, err := chainA.GetNodeAtIndex(2)
